@@ -18,9 +18,12 @@ namespace Hageeshow.Breakout
         private void Awake()
         {
             instance = this;
+        }
 
+        private void Start()
+        {
             gameObjects.Add(board);
-            gameObjects.Add(brickGenerator); 
+            gameObjects.Add(brickGenerator);
             gameObjects.Add(hagee);
             gameObjects.Add(title);
         }

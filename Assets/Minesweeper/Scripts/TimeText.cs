@@ -9,6 +9,7 @@ namespace Hageeshow.Minesweeper
 
         public void GameStart()
         {
+            tick = 0.0F;
             time = 0U;
         }
 
@@ -23,8 +24,6 @@ namespace Hageeshow.Minesweeper
             myText.text = time.ToString();
         }
 
-        public void GameEnd(bool isWon)
-        {
-        }
+        public void GameEnd(bool isWon) {}
     }
 }

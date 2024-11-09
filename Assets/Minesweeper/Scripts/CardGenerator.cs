@@ -7,13 +7,14 @@ namespace Hageeshow.Minesweeper
     {
         private const uint X = 15U;
         private const uint Y = 5U;
-        private const uint MINES = 15U;
+        public const uint MINES_COUNT = 15U;
+        private const uint COVERS_COUNT = X * Y - MINES_COUNT;
 
         [SerializeField]
         private GameObject cardPrefab;
 
         [SerializeField]
-        private Sprite[] empty;
+        private Sprite empty;
         [SerializeField]
         private Sprite[] one;
         [SerializeField]
@@ -36,14 +37,15 @@ namespace Hageeshow.Minesweeper
         private Sprite back;
 
         private readonly Sprite[][] cardSprites = new Sprite[9][];
-
         private readonly Card[,] map = new Card[Y, X];
+        private readonly Card[] allMines = new Card[MINES_COUNT];
 
+        private uint coversCount;
         private bool hasFristClick = false;
 
         private void Awake()
         {
-            cardSprites[0] = empty;
+            cardSprites[0] = new Sprite[] { empty };
             cardSprites[1] = one;
             cardSprites[2] = two;
             cardSprites[3] = three;
@@ -57,10 +59,10 @@ namespace Hageeshow.Minesweeper
         private void Start()
         {
             //建立所有的卡牌物件
-            float xPos, yPos = 3.6F; //y起始3.5
+            float xPos, yPos = 3.6F; //y起始3.6
             for (uint y = 0U; y < Y; y++)
             {
-                xPos = -7.7F; //x起始7.
+                xPos = -7.7F; //x起始7.7
                 for (uint x = 0U; x < X; x++)
                 {
                     GameObject cardObject = Instantiate(cardPrefab, new(xPos, yPos), Quaternion.identity, transform);
@@ -75,6 +77,7 @@ namespace Hageeshow.Minesweeper
         public void GameStart()
         {
             hasFristClick = false;
+            coversCount = COVERS_COUNT;
             //清空地圖
             for (uint y = 0U; y < Y; y++)
                 for (uint x = 0U; x < X; x++)
@@ -97,10 +100,20 @@ namespace Hageeshow.Minesweeper
         private void Flip(uint x, uint y)
         {
             Card card = map[y, x];
-            if (!card.ForceFlip()) //已經翻過了
+            if (!card.ForceFlip(true)) //已經翻過了
                 return;
 
-            if (card.val != 0)
+            if (card.GetVal() == Card.MINE) //開到地雷
+            {
+                GameManager.instance.GameEnd(false);
+                return;
+            }
+
+            coversCount--; //減少蓋牌數
+            if (coversCount == 0)
+                GameManager.instance.GameEnd(true); //沒有牌可以翻了就勝利
+
+            if (card.GetVal() != 0) //不是0 不用把九宮格都翻出來
                 return;
             //0的話 就把九宮格都翻出來
             foreach (Point p in Get9(x, y))
@@ -119,15 +132,23 @@ namespace Hageeshow.Minesweeper
                 {
                     Point point = new(x, y);
                     if (!avoidMines.Contains(point)) //不是應該避免地雷的位置
-                        candidates[i++] = point; //放置地雷
+                        candidates[i++] = point; //增加候選點
                 }
             }
 
-            //洗牌
-            ShuffleCandidates(candidates);
-            for (i = 0U; i < MINES; i++) //取前MINES項作為地雷
-                map[candidates[i].y, candidates[i].x].SetVal(Card.MINE, mine);
-            for (; i < candidates.Length; i++)//剩下的不是地雷
+            //候選點洗牌
+            int len = candidates.Length;
+            int lenSub1 = len - 1;
+            for (int index = 0; index < lenSub1; index++)
+            {
+                int swap = Random.Range(index, len);
+                if (swap != index)
+                    (candidates[index], candidates[swap]) = (candidates[swap], candidates[index]);
+            }
+
+            for (i = 0U; i < MINES_COUNT; i++) //取前MINES項作為地雷 並儲存到allMines陣列裡
+                (allMines[i] = map[candidates[i].y, candidates[i].x]).SetVal(Card.MINE, mine);
+            for (; i < candidates.Length; i++) //剩下的不是地雷
                 SetMinesCount(candidates[i].x, candidates[i].y);
             foreach (Point p in avoidMines) //當初被避開的九宮格也要設定數字
                 SetMinesCount(p.x, p.y);
@@ -137,7 +158,7 @@ namespace Hageeshow.Minesweeper
         {
             uint minesCount = 0U;
             foreach (Point p in Get9(x, y)) //九宮格內找有幾個地雷
-                if (map[p.y, p.x].val == Card.MINE)
+                if (map[p.y, p.x].GetVal() == Card.MINE)
                     minesCount++;
             Sprite[] thisCardSprites = cardSprites[minesCount];
             map[y, x].SetVal(minesCount, thisCardSprites[Random.Range(0, thisCardSprites.Length)]);
@@ -163,28 +184,14 @@ namespace Hageeshow.Minesweeper
             };
         }
 
-        private void ShuffleCandidates(Point[] candidates)
-        {
-            //材質陣列洗牌
-            int len = candidates.Length;
-            int lenSub1 = len - 1;
-            for (int i = 0; i < lenSub1; i++)
-            {
-                int swap = Random.Range(i, len);
-                if (swap != i)
-                    (candidates[i], candidates[swap]) = (candidates[swap], candidates[i]);
-            }
-        }
-
         public void GameEnd(bool isWon)
         {
-            //如果輸了 就展示地雷
             if (isWon)
                 return;
-            for (uint y = 0U; y < Y; y++)
-                for (uint x = 0U; x < X; x++)
-                    if (map[y, x].val == Card.MINE)
-                        _ = map[y, x].ForceFlip();
+
+            //如果輸了 就展示地雷
+            foreach (Card mine in allMines)
+                _ = mine.ForceFlip(false);
         }
 
         private readonly struct Point
@@ -204,7 +211,7 @@ namespace Hageeshow.Minesweeper
 
             public override int GetHashCode()
             {
-                return (int)((x << 8) + y);
+                return (int)((x << 8) | y);
             }
         }
     }

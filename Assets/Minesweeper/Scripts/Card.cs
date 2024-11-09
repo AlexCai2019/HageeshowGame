@@ -8,7 +8,7 @@ namespace Hageeshow.Minesweeper
 
         private uint x;
         private uint y;
-        internal uint val = 0U; //初始化為0
+        private uint val = 0U; //初始化為0
         private CardState state = CardState.COVER;
 
         private SpriteRenderer spriteRenderer;
@@ -42,11 +42,14 @@ namespace Hageeshow.Minesweeper
             this.valSprite = valSprite;
         }
 
+        internal uint GetVal() => val;
+
         internal void ResetCard(Sprite backSprite)
         {
             val = 0U;
-            valSprite = backSprite;
+            spriteRenderer.sprite = valSprite = backSprite;
             state = CardState.COVER;
+            flagObject.SetActive(false);
         }
 
         public void ClickCard(uint x, uint y)
@@ -55,30 +58,33 @@ namespace Hageeshow.Minesweeper
                 GameManager.instance.ClickCard(x, y);
         }
 
-        internal bool ForceFlip()
+        internal bool ForceFlip(bool disableFlag)
         {
             if (state == CardState.OPEN)
                 return false; //已經開過了
 
             //強制開啟
             state = CardState.OPEN;
-            flagObject.SetActive(false);
+            if (disableFlag)
+                flagObject.SetActive(false);
 
             spriteRenderer.sprite = valSprite;
             return true;
         }
 
-        private void UpdateFlag()
+        public void UpdateFlag()
         {
             if (state == CardState.COVER)
             {
                 flagObject.SetActive(true);
                 state = CardState.FLAG;
+                GameManager.instance.UpdateFlag(true);
             }
             else if (state == CardState.FLAG)
             {
                 flagObject.SetActive(false);
                 state = CardState.COVER;
+                GameManager.instance.UpdateFlag(false);
             }
         }
     }

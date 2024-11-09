@@ -20,7 +20,10 @@ namespace Hageeshow.FlappyBird
         private void Awake()
         {
             instance = this;
+        }
 
+        private void Start()
+        {
             gameObjects.Add(title);
             gameObjects.Add(hagee);
             gameObjects.Add(pipeGenerator);

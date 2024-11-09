@@ -11,17 +11,23 @@ namespace Hageeshow.Minesweeper
         [SerializeField]
         private TimeText timeText;
         [SerializeField]
+        private MinesText minesText;
+        [SerializeField]
         private CardGenerator cardGenerator;
 
         private void Awake()
         {
             instance = this;
+        }
 
+        private void Start()
+        {
             gameObjects.Add(restartButton);
             gameObjects.Add(timeText);
+            gameObjects.Add(minesText);
             gameObjects.Add(cardGenerator);
 
-            isGaming = true; //一進入就開始
+            GameStart(); //一進入就開始
         }
 
         private void OnDestroy()
@@ -38,6 +44,17 @@ namespace Hageeshow.Minesweeper
         {
             if (isGaming)
                 cardGenerator.ClickCard(x, y);
+        }
+
+        public void UpdateFlag(bool flag)
+        {
+            if (isGaming)
+            {
+                if (flag)
+                    minesText.Subtract();
+                else
+                    minesText.Add();
+            }
         }
 
         public void RestartGame()
