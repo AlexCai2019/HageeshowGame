@@ -1,0 +1,81 @@
+using UnityEngine;
+
+namespace Hageeshow.Breakout
+{
+    [RequireComponent(typeof(AudioSource))]
+    public class BrickGenerator : MonoBehaviour, IGameState, IHitBrickEvent
+    {
+        [SerializeField]
+        private GameObject brickPrefab;
+        [SerializeField]
+        private Sprite[] allCards;
+
+        private AudioSource soundPlayer;
+        private uint remainBricks = 0U;
+
+        private void Awake()
+        {
+            soundPlayer = GetComponent<AudioSource>();
+        }
+
+        private void Start()
+        {
+            ShuffleTextures(); //材質陣列洗牌
+
+            //建立所有的磚塊
+            float xPos, yPos = 4.0F; //y起始4
+            for (uint y = 0U; y < 4U; y++)
+            {
+                xPos = -9.0F; //x起始9
+                for (uint x = 0U; x < 13U; x++)
+                {
+                    GameObject brickObject = Instantiate(brickPrefab, new(xPos, yPos), brickPrefab.transform.rotation, transform);
+                    brickObject.GetComponent<SpriteRenderer>().sprite = allCards[y * 13 + x]; //現在就替換 讓遊戲開始前好看一點
+                    xPos += 1.5F; //每直行x增加1.5
+                }
+                yPos--; //每橫列y減少1
+            }
+        }
+
+        public void GameStart()
+        {
+            remainBricks = 13U * 4U;
+        }
+
+        public void Gaming()
+        {
+            if (remainBricks == 0)
+                GameManager.instance.GameEnd(true); //沒有牌是active了
+        }
+
+        public void GameEnd(bool isWon)
+        {
+            ShuffleTextures(); //材質陣列洗牌
+            //替換
+            uint index = 0U;
+            foreach (Transform child in transform)
+            {
+                child.GetComponent<SpriteRenderer>().sprite = allCards[index++];
+                child.gameObject.SetActive(true);
+            }
+        }
+
+        public void HitBrick()
+        {
+            remainBricks--;
+            soundPlayer.Play();
+        }
+
+        private void ShuffleTextures()
+        {
+            //材質陣列洗牌
+            int len = allCards.Length;
+            for (int i = 0; i < len - 1; i++)
+            {
+                int swap = Random.Range(i, len);
+                if (swap != i)
+                    (allCards[i], allCards[swap]) = (allCards[swap], allCards[i]);
+            }
+        }
+    }
+}
