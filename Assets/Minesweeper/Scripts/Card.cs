@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace Hageeshow.Minesweeper
 {
+    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Animator))]
     public class Card : MonoBehaviour, IClickEvent
     {
         public const uint MINE = 9;
@@ -11,15 +13,20 @@ namespace Hageeshow.Minesweeper
         private uint val = 0U; //初始化為0
         private CardState state = CardState.COVER;
 
-        private SpriteRenderer spriteRenderer;
-        private Sprite valSprite;
+        private Animator animator;
 
         private GameObject flagObject;
 
+        private SpriteRenderer valRenderer;
+        private Sprite valSprite;
+
         private void Awake()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            flagObject = transform.GetChild(0).gameObject;
+            animator = GetComponent<Animator>();
+
+            flagObject = transform.GetChild(1).gameObject;
+
+            valRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         }
 
         private void OnMouseOver()
@@ -44,13 +51,15 @@ namespace Hageeshow.Minesweeper
 
         internal uint GetVal() => val;
 
-        internal void ResetCard(Sprite backSprite)
+        internal void ResetCard()
         {
             val = 0U;
-            spriteRenderer.sprite = valSprite = backSprite;
             state = CardState.COVER;
+            animator.SetBool("isShow", false);
             flagObject.SetActive(false);
         }
+
+        public void DisableValSprite() => valRenderer.sprite = null; //不顯示
 
         public void ClickCard(uint x, uint y)
         {
@@ -68,7 +77,8 @@ namespace Hageeshow.Minesweeper
             if (disableFlag)
                 flagObject.SetActive(false);
 
-            spriteRenderer.sprite = valSprite;
+            valRenderer.sprite = valSprite;
+            animator.SetBool("isShow", true);
             return true;
         }
 

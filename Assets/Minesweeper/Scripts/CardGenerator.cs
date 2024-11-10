@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace Hageeshow.Minesweeper
 {
+    [RequireComponent(typeof(AudioSource))]
     public class CardGenerator : MonoBehaviour, IGameState, IClickEvent
     {
-        private const uint X = 15U;
-        private const uint Y = 5U;
+        private const uint X = 13U;
+        private const uint Y = 6U;
         public const uint MINES_COUNT = 15U;
         private const uint COVERS_COUNT = X * Y - MINES_COUNT;
 
@@ -33,12 +34,17 @@ namespace Hageeshow.Minesweeper
         private Sprite[] eight;
         [SerializeField]
         private Sprite mine;
+
         [SerializeField]
-        private Sprite back;
+        private AudioClip flipClip;
+        [SerializeField]
+        private AudioClip dieClip;
+
+        private AudioSource audioSource;
 
         private readonly Sprite[][] cardSprites = new Sprite[9][];
         private readonly Card[,] map = new Card[Y, X];
-        private readonly Card[] allMines = new Card[MINES_COUNT];
+        private readonly List<Card> allMines = new();
 
         private uint coversCount;
         private bool hasFristClick = false;
@@ -54,15 +60,17 @@ namespace Hageeshow.Minesweeper
             cardSprites[6] = six;
             cardSprites[7] = seven;
             cardSprites[8] = eight;
+
+            audioSource = GetComponent<AudioSource>();
         }
 
         private void Start()
         {
             //建立所有的卡牌物件
-            float xPos, yPos = 3.6F; //y起始3.6
+            float xPos, yPos = 4.3F; //y起始4.3
             for (uint y = 0U; y < Y; y++)
             {
-                xPos = -7.7F; //x起始7.7
+                xPos = -6.6F; //x起始6.6
                 for (uint x = 0U; x < X; x++)
                 {
                     GameObject cardObject = Instantiate(cardPrefab, new(xPos, yPos), Quaternion.identity, transform);
@@ -78,10 +86,12 @@ namespace Hageeshow.Minesweeper
         {
             hasFristClick = false;
             coversCount = COVERS_COUNT;
+            audioSource.clip = flipClip;
+
             //清空地圖
             for (uint y = 0U; y < Y; y++)
                 for (uint x = 0U; x < X; x++)
-                    map[y, x].ResetCard(back);
+                    map[y, x].ResetCard();
         }
 
         public void Gaming() {}
@@ -95,6 +105,7 @@ namespace Hageeshow.Minesweeper
             }
 
             Flip(x, y);
+            audioSource.Play();
         }
 
         private void Flip(uint x, uint y)
@@ -146,8 +157,12 @@ namespace Hageeshow.Minesweeper
                     (candidates[index], candidates[swap]) = (candidates[swap], candidates[index]);
             }
 
-            for (i = 0U; i < MINES_COUNT; i++) //取前MINES項作為地雷 並儲存到allMines陣列裡
-                (allMines[i] = map[candidates[i].y, candidates[i].x]).SetVal(Card.MINE, mine);
+            for (i = 0U; i < MINES_COUNT; i++) //取前MINES項作為地雷 並儲存到allMines裡
+            {
+                Card newMine = map[candidates[i].y, candidates[i].x];
+                newMine.SetVal(Card.MINE, mine);
+                allMines.Add(newMine);
+            }
             for (; i < candidates.Length; i++) //剩下的不是地雷
                 SetMinesCount(candidates[i].x, candidates[i].y);
             foreach (Point p in avoidMines) //當初被避開的九宮格也要設定數字
@@ -192,6 +207,9 @@ namespace Hageeshow.Minesweeper
             //如果輸了 就展示地雷
             foreach (Card mine in allMines)
                 _ = mine.ForceFlip(false);
+            allMines.Clear();
+            audioSource.clip = dieClip;
+            audioSource.Play();
         }
 
         private readonly struct Point
