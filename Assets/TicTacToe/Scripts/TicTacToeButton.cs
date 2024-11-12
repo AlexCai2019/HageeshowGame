@@ -1,18 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class TicTacToeButton : MonoBehaviour
+namespace Hageeshow.TicTacToe
 {
-    // Start is called before the first frame update
-    void Start()
+    public class TicTacToeButton : MonoBehaviour, IPointerClickHandler
     {
-        
-    }
+        [SerializeField]
+        private Human human;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private State state = State.EMPTY;
+
+        private Image image;
+
+        private void Awake()
+        {
+            image = GetComponent<Image>();
+        }
+
+        public void OnPointerClick(PointerEventData pointerEventData)
+        {
+            human.OnClick(this);
+        }
+
+        internal void OnValidClick(TicTacToePlayer player)
+        {
+            state = player.myState;
+            image.sprite = player.mySprite;
+            GameManager.instance.OnValidClick();
+        }
+
+        internal State GetState() => state;
     }
 }
