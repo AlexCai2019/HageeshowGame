@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Hageeshow.TicTacToe
 {
     public class Human : TicTacToePlayer
@@ -12,10 +8,5 @@ namespace Hageeshow.TicTacToe
         }
 
         public override void Gaming() { }
-
-        public override void GameEnd(bool isWon)
-        {
-            isMyTurn = false;
-        }
     }
 }

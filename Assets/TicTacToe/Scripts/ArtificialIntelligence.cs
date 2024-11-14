@@ -41,8 +41,9 @@ namespace Hageeshow.TicTacToe
             {
                 1U => map[map[CENTER].GetState() == State.HAGEE ? LEFT_CORNER : CENTER], //搶占中間 不然就左上角
                 2U => Round2(map),
-                _ => Round3(),
+                _ => Round3(map),
             });
+            round++;
         }
 
         private TicTacToeButton Round2(TicTacToeButton[] map)
@@ -75,41 +76,59 @@ namespace Hageeshow.TicTacToe
             else //如果不是下在左上角 那就肯定是下在中間了
                 possibleWays = tryAtCenter;
 
-            Shuffle(possibleWays);
             for (int i = 0, len = possibleWays.GetLength(0); i < len; i++)
                 if (map[possibleWays[i, 0]].GetState() == State.EMPTY && map[possibleWays[i, 1]].GetState() == State.EMPTY)
                     return map[possibleWays[i, 1]]; //對第一手下左上角而言 搶角落比較有勝算
 
             //沒得下
-            TicTacToeButton[] notPlaced = GetNotPlaced();
-            return notPlaced[Random.Range(0, notPlaced.Length)];
+            return RandomMove();
         }
 
-        private TicTacToeButton Round3()
+        private TicTacToeButton Round3(TicTacToeButton[] map)
         {
-            return null;
+            int first, second, third;
+            State f, s, t;
+
+            int[,] winning = GameManager.instance.winning;
+
+            for (int i = 0, len = winning.GetLength(0); i < len; i++) //檢查自己是否即將連線 如果是則執行
+            {
+                f = map[first = winning[i, 0]].GetState(); //可能連線的第一格 同時將索引存進first中
+                s = map[second = winning[i, 1]].GetState(); //可能連線的第二格 同時將索引存進second中
+                t = map[third = winning[i, 2]].GetState(); //可能連線的第三格 同時將索引存進third中
+                if (f == State.CHOCOLATE && s == State.CHOCOLATE && t == State.EMPTY) //[0]和[1]皆為Chocolate
+                    return map[third];
+                if (f == State.CHOCOLATE && t == State.CHOCOLATE && s == State.EMPTY) //[0]和[2]皆為Chocolate
+                    return map[second];
+                if (s == State.CHOCOLATE && t == State.CHOCOLATE && f == State.EMPTY) //[1]和[2]皆為Chocolate
+                    return map[first];
+            }
+
+            for (int i = 0, len = winning.GetLength(0); i < len; i++) //檢查人類是否即將連線 如果人類確實即將連線則阻止
+            {
+                f = map[first = winning[i, 0]].GetState(); //可能連線的第一格 同時將索引存進first中
+                s = map[second = winning[i, 1]].GetState(); //可能連線的第二格 同時將索引存進second中
+                t = map[third = winning[i, 2]].GetState(); //可能連線的第三格 同時將索引存進third中
+                if (f == State.HAGEE && s == State.HAGEE && t == State.EMPTY) //[0]和[1]皆為Hagee
+                    return map[third];
+                if (f == State.HAGEE && t == State.HAGEE && s == State.EMPTY) //[0]和[2]皆為Hagee
+                    return map[second];
+                if (s == State.HAGEE && t == State.HAGEE && f == State.EMPTY) //[1]和[2]皆為Hagee
+                    return map[first];
+            }
+
+            //以上都不通過
+            return RandomMove(); //就隨機走
         }
 
-        private TicTacToeButton[] GetNotPlaced()
+        private TicTacToeButton RandomMove()
         {
-            TicTacToeButton[] notPlaces = new TicTacToeButton[GameManager.instance.GetSpaces()];
+            TicTacToeButton[] notPlaced = new TicTacToeButton[GameManager.instance.GetSpaces()];
             uint i = 0U;
             foreach (TicTacToeButton button in GameManager.instance.map)
                 if (button.GetState() == State.EMPTY)
-                    notPlaces[i++] = button;
-            return notPlaces;
-        }
-
-        private void Shuffle<T>(T[,] array)
-        {
-            for (int i = 0, len = array.GetLength(0); i < len; i++)
-            {
-            }
-        }
-
-        public override void GameEnd(bool isWon)
-        {
-            isMyTurn = false;
+                    notPlaced[i++] = button;
+            return notPlaced[Random.Range(0, notPlaced.Length)];
         }
     }
 }

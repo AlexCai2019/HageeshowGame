@@ -27,9 +27,14 @@ namespace Hageeshow.TicTacToe
         {
             state = player.myState;
             image.sprite = player.mySprite;
-            GameManager.instance.OnValidClick();
         }
 
         internal State GetState() => state;
+
+        internal void ResetButton()
+        {
+            image.sprite = null;
+            state = State.EMPTY;
+        }
     }
 }

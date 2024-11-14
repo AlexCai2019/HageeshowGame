@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Hageeshow.TicTacToe
 {
@@ -9,6 +10,9 @@ namespace Hageeshow.TicTacToe
         internal Sprite mySprite;
         [SerializeField]
         internal State myState;
+        [SerializeField]
+        private Text winTimeText;
+        private uint winTime = 0U;
 
         protected bool isMyTurn;
 
@@ -43,8 +47,18 @@ namespace Hageeshow.TicTacToe
 
             isMyTurn = false;
             opponent.isMyTurn = true;
+
+            GameManager.instance.OnValidClick();
         }
 
-        public abstract void GameEnd(bool isWon);
+        public void GameEnd(bool isWon)
+        {
+            isMyTurn = false;
+            if (isWon)
+            {
+                winTime++;
+                winTimeText.text = winTime.ToString();
+            }
+        }
     }
 }

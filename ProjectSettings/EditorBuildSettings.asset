@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MinesweeperScene.unity
     guid: 0b1894d5e18eb7f46bd9c59a81cf8a6b
+  - enabled: 1
+    path: Assets/Scenes/TicTacToeScene.unity
+    guid: 47196594642e641458bb10de8f0a3211
   m_configObjects: {}
