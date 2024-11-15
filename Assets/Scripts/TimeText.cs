@@ -1,9 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace Hageeshow.Minesweeper
+namespace Hageeshow
 {
     public class TimeText : GenericText, IGameState
     {
+        [SerializeField]
+        private Text recordText;
+
+        private uint recordTime = uint.MaxValue;
         private uint time;
         private float tick;
 
@@ -11,6 +16,7 @@ namespace Hageeshow.Minesweeper
         {
             tick = 0.0F;
             time = 0U;
+            recordText.text = string.Empty;
         }
 
         public void Gaming()
@@ -24,6 +30,14 @@ namespace Hageeshow.Minesweeper
             myText.text = time.ToString();
         }
 
-        public void GameEnd(bool isWon) {}
+        public void GameEnd(bool isWon)
+        {
+            if (isWon)
+            {
+                if (time < recordTime)
+                    recordTime = time;
+                recordText.text = $"本次紀錄: {time}\n最快紀錄: {recordTime}";
+            }
+        }
     }
 }

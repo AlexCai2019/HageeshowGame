@@ -11,18 +11,19 @@ namespace Hageeshow.TicTacToe
         [SerializeField]
         internal State myState;
         [SerializeField]
-        private Text winTimeText;
+        private Text resultText;
         private uint winTime = 0U;
+        private uint tieTime = 0U;
 
         protected bool isMyTurn;
 
         [SerializeField]
-        protected AudioClip[] clips;
-        protected AudioSource audioSource;
-        protected int clipsIndex = 0;
+        private AudioClip[] clips;
+        private AudioSource audioSource;
+        private int clipsIndex = 0;
 
         [SerializeField]
-        protected TicTacToePlayer opponent;
+        private TicTacToePlayer opponent;
 
         private void Awake()
         {
@@ -51,14 +52,18 @@ namespace Hageeshow.TicTacToe
             GameManager.instance.OnValidClick();
         }
 
+        public void Tie()
+        {
+            tieTime++;
+            GameEnd(false);
+        }
+
         public void GameEnd(bool isWon)
         {
             isMyTurn = false;
             if (isWon)
-            {
                 winTime++;
-                winTimeText.text = winTime.ToString();
-            }
+            resultText.text = $"{winTime} / {tieTime}";
         }
     }
 }

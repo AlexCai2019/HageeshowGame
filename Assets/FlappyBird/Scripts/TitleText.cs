@@ -31,7 +31,7 @@ namespace Hageeshow.FlappyBird
             myText.text = "遊戲結束";
             if (pipes > pipesRecord)
                 pipesRecord = pipes;
-            recordText.text = "本次紀錄: " + pipes + " 最高紀錄: " + pipesRecord;
+            recordText.text = $"本次紀錄: {pipes} 最高紀錄: {pipesRecord}";
         }
     }
 }

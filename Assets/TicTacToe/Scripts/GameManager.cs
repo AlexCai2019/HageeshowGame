@@ -56,14 +56,6 @@ namespace Hageeshow.TicTacToe
 
         public void OnValidClick()
         {
-            spaces--;
-            if (spaces == 0)
-            {
-                isTie = true;
-                GameEnd(false);
-                return;
-            }
-
             for (int i = 0, len = winning.GetLength(0); i < len; i++)
             {
                 State x = map[winning[i, 0]].GetState();
@@ -82,12 +74,25 @@ namespace Hageeshow.TicTacToe
                     return;
                 }
             }
+
+            spaces--;
+            if (spaces == 0)
+            {
+                isTie = true;
+                GameEnd(false);
+                return;
+            }
         }
 
         public override void GameEnd(bool isWon)
         {
             isGaming = false;
-            if (!isTie)
+            if (isTie)
+            {
+                human.Tie();
+                ai.Tie();
+            }
+            else
             {
                 human.GameEnd(isWon);
                 ai.GameEnd(!isWon);

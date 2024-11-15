@@ -12,6 +12,10 @@ namespace Hageeshow.Breakout
         private Hagee hagee;
         [SerializeField]
         private TitleText title;
+        [SerializeField]
+        private WinVideoControl winVideo;
+        [SerializeField]
+        private TimeText timeText;
 
         public static GameManager instance;
 
@@ -26,6 +30,8 @@ namespace Hageeshow.Breakout
             gameObjects.Add(brickGenerator);
             gameObjects.Add(hagee);
             gameObjects.Add(title);
+            gameObjects.Add(winVideo);
+            gameObjects.Add(timeText);
         }
 
         private void OnDestroy()

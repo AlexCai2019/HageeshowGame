@@ -1,9 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Hageeshow.TicTacToe
 {
     public class ArtificialIntelligence : TicTacToePlayer
     {
+        [SerializeField]
+        private Dropdown difficulty;
+
         private const uint CENTER = 4U; //陣列的中間
         private const uint LEFT_CORNER = 0U; //陣列的第一項
 
@@ -26,16 +30,9 @@ namespace Hageeshow.TicTacToe
                 return;
 
             tick += Time.deltaTime;
-            if (tick < 3.0F) //想三秒
+            if (tick < 2.5F) //想2.5秒
                 return;
 
-            ThinkAMove();
-            tick = 0.0F;
-            isMyTurn = false;
-        }
-
-        private void ThinkAMove()
-        {
             TicTacToeButton[] map = GameManager.instance.map;
             OnClick(round switch
             {
@@ -43,11 +40,17 @@ namespace Hageeshow.TicTacToe
                 2U => Round2(map),
                 _ => Round3(map),
             });
+
             round++;
+            tick = 0.0F;
+            isMyTurn = false;
         }
 
         private TicTacToeButton Round2(TicTacToeButton[] map)
         {
+            if (difficulty.value == 0) //簡單模式
+                return RandomMove();
+
             int first, second, third;
             State f, s, t;
 
@@ -76,9 +79,19 @@ namespace Hageeshow.TicTacToe
             else //如果不是下在左上角 那就肯定是下在中間了
                 possibleWays = tryAtCenter;
 
-            for (int i = 0, len = possibleWays.GetLength(0); i < len; i++)
-                if (map[possibleWays[i, 0]].GetState() == State.EMPTY && map[possibleWays[i, 1]].GetState() == State.EMPTY)
-                    return map[possibleWays[i, 1]]; //對第一手下左上角而言 搶角落比較有勝算
+            //避免每次都下在同樣的地方 造成必勝
+            for (int index = 0, len = possibleWays.GetLength(0), lenSub1 = len - 1; index < lenSub1; index++)
+            {
+                int swap = Random.Range(index, len);
+                if (swap == index)
+                    continue;
+                (possibleWays[index, 0], possibleWays[swap, 0]) = (possibleWays[swap, 0], possibleWays[index, 0]);
+                (possibleWays[index, 1], possibleWays[swap, 1]) = (possibleWays[swap, 1], possibleWays[index, 1]);
+            }
+
+            for (int index = 0, len = possibleWays.GetLength(0); index < len; index++)
+                if (map[possibleWays[index, 0]].GetState() == State.EMPTY && map[possibleWays[index, 1]].GetState() == State.EMPTY)
+                    return map[possibleWays[index, Random.Range(0, 2)]]; //0或1
 
             //沒得下
             return RandomMove();
@@ -86,6 +99,9 @@ namespace Hageeshow.TicTacToe
 
         private TicTacToeButton Round3(TicTacToeButton[] map)
         {
+            if (difficulty.value <= 1) //簡單、普通模式
+                return RandomMove();
+
             int first, second, third;
             State f, s, t;
 
