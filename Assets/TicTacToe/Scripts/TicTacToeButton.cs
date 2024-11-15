@@ -8,6 +8,8 @@ namespace Hageeshow.TicTacToe
     {
         [SerializeField]
         private Human human;
+        [SerializeField]
+        private Sprite cardSprite;
 
         private State state = State.EMPTY;
 
@@ -29,11 +31,11 @@ namespace Hageeshow.TicTacToe
             image.sprite = player.mySprite;
         }
 
-        internal State GetState() => state;
+        public State GetState() => state;
 
         internal void ResetButton()
         {
-            image.sprite = null;
+            image.sprite = cardSprite;
             state = State.EMPTY;
         }
     }
