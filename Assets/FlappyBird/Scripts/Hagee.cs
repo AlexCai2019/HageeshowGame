@@ -15,6 +15,8 @@ namespace Hageeshow.FlappyBird
         private Rigidbody2D rb2D;
         private AudioSource soundPlayer;
 
+        private bool jump;
+
         private void Awake()
         {
             rb2D = GetComponent<Rigidbody2D>();
@@ -25,6 +27,7 @@ namespace Hageeshow.FlappyBird
         {
             rb2D.bodyType = RigidbodyType2D.Dynamic;
             transform.position = Vector3.zero;
+            jump = false;
 
             soundPlayer.clip = rushClip;
             soundPlayer.Play();
@@ -33,9 +36,18 @@ namespace Hageeshow.FlappyBird
         public void Gaming()
         {
             if (Input.GetKeyUp(KeyCode.Space)) //«öªÅ¥ÕÁä
-                rb2D.velocity = new(rb2D.velocity.x, 3.5F);
+                jump = true;
             if (transform.position.y < -6) //ºL¦º
                 GameManager.instance.GameEnd(false);
+        }
+
+        public void FixedGaming()
+        {
+            if (jump)
+            {
+                rb2D.velocity = new(rb2D.velocity.x, 3.5F);
+                jump = false;
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)

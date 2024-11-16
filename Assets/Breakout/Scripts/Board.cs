@@ -9,6 +9,8 @@ namespace Hageeshow.Breakout
         [SerializeField]
         private float speed;
 
+        private float move;
+
         private BoxCollider2D boxCollider2D;
         private float halfColliderWidth;
         private float quarterColliderHeight;
@@ -20,11 +22,14 @@ namespace Hageeshow.Breakout
             quarterColliderHeight = boxCollider2D.bounds.size.y * 0.25F;
         }
 
-        public void GameStart() {}
-
         public void Gaming()
         {
-            transform.Translate(Input.GetAxis("Horizontal") * Time.deltaTime * speed, 0.0F, 0.0F);
+            move = Input.GetAxis("Horizontal");
+        }
+
+        public void FixedGaming()
+        {
+            transform.Translate(move * speed, 0.0F, 0.0F);
         }
 
         public void GameEnd(bool isWon)

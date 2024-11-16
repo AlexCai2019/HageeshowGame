@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Hageeshow
 {
-    public class GenericGameManager : MonoBehaviour, IGameState
+    public abstract class GenericGameManager : MonoBehaviour, IGameState
     {
         protected bool isGaming = false;
         protected readonly List<IGameState> gameObjects = new();
@@ -16,10 +16,13 @@ namespace Hageeshow
                 NotGaming();
         }
 
-        protected virtual bool StartCondition()
+        private void FixedUpdate()
         {
-            return Input.GetKeyUp(KeyCode.Space); //預設是按空白鍵
+            if (isGaming)
+                FixedGaming();
         }
+
+        protected abstract bool StartCondition();
 
         public virtual void GameStart()
         {
@@ -32,6 +35,12 @@ namespace Hageeshow
         {
             foreach (IGameState obj in gameObjects)
                 obj.Gaming();
+        }
+
+        public virtual void FixedGaming()
+        {
+            foreach (IGameState obj in gameObjects)
+                obj.FixedGaming();
         }
 
         public virtual void GameEnd(bool isWon)

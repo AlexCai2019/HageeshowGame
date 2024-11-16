@@ -4,9 +4,10 @@ namespace Hageeshow.Breakout
 {
     public class WinVideoControl : GenericVideoControl, IGameState
     {
-        public void GameStart() { }
-
-        public void Gaming() { }
+        public void GameStart()
+        {
+            gameObject.SetActive(false);
+        }
 
         public void GameEnd(bool isWon)
         {

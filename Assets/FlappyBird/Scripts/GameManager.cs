@@ -43,6 +43,11 @@ namespace Hageeshow.FlappyBird
                 obj.PassPipe();
         }
 
+        protected override bool StartCondition()
+        {
+            return Input.GetKeyUp(KeyCode.Space); //預設是按空白鍵
+        }
+
         public override void GameEnd(bool isWon)
         {
             base.GameEnd(isWon);

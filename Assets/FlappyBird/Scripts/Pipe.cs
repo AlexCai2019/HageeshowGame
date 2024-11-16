@@ -42,7 +42,7 @@ namespace Hageeshow.FlappyBird
             lower.GetComponent<SpriteRenderer>().sprite = lowerSprite;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (transform.position.x < -10)
                 Destroy(gameObject);

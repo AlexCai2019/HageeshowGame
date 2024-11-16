@@ -30,9 +30,11 @@ namespace Hageeshow.TicTacToe
             audioSource = GetComponent<AudioSource>();
         }
 
-        public abstract void GameStart();
+        public virtual void GameStart() { }
 
-        public abstract void Gaming();
+        public virtual void Gaming() { }
+
+        public virtual void FixedGaming() { }
 
         public void OnClick(TicTacToeButton button)
         {
@@ -58,7 +60,7 @@ namespace Hageeshow.TicTacToe
             GameEnd(false);
         }
 
-        public void GameEnd(bool isWon)
+        public virtual void GameEnd(bool isWon)
         {
             isMyTurn = false;
             if (isWon)

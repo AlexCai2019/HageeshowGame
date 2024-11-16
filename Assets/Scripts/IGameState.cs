@@ -2,8 +2,9 @@ namespace Hageeshow
 {
     public interface IGameState
     {
-        void GameStart();
-        void Gaming();
-        void GameEnd(bool isWon);
+        void GameStart() { }
+        void Gaming() { }
+        void FixedGaming() { }
+        void GameEnd(bool isWon) { }
     }
 }

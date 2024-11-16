@@ -39,6 +39,11 @@ namespace Hageeshow.Breakout
             instance = null;
         }
 
+        protected override bool StartCondition()
+        {
+            return Input.GetKeyUp(KeyCode.Space); //預設是按空白鍵
+        }
+
         public void HitBrick()
         {
             brickGenerator.HitBrick();

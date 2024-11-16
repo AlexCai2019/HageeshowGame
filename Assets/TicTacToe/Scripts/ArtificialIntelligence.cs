@@ -24,7 +24,7 @@ namespace Hageeshow.TicTacToe
             isMyTurn = false;
         }
 
-        public override void Gaming()
+        public override void FixedGaming()
         {
             if (!isMyTurn)
                 return;
