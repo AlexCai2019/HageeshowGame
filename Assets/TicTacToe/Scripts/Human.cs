@@ -6,5 +6,7 @@ namespace Hageeshow.TicTacToe
         {
             isMyTurn = true;
         }
+
+        public override void Gaming() { }
     }
 }

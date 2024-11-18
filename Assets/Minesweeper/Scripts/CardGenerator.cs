@@ -94,8 +94,6 @@ namespace Hageeshow.Minesweeper
                     map[y, x].ResetCard();
         }
 
-        public void Gaming() {}
-
         public void ClickCard(uint x, uint y)
         {
             if (!hasFristClick) //第一次點擊

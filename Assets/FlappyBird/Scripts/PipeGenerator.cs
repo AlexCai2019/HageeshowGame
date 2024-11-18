@@ -7,36 +7,41 @@ namespace Hageeshow.FlappyBird
     {
         [SerializeField]
         private GameObject pipePrefab;
-        [SerializeField]
-        private Sprite[] allCards;
 
         private AudioSource soundPlayer;
 
-        private float time;
-        private const float GENERATE_PERIOD = 1.0F;
+        private const int GENERATE_PREFABS = 10;
+        private const float PIPES_DISTANCE = 5.505F;
+
+        private int leadingPipe;
+        private readonly Pipe[] pipes = new Pipe[GENERATE_PREFABS];
 
         private void Awake()
         {
             soundPlayer = GetComponent<AudioSource>();
         }
 
-        public void GameStart()
+        private void Start()
         {
-            time = 0.0F;
-            for (int i = transform.childCount - 1; i >= 0; i--)
-                Destroy(transform.GetChild(i).gameObject);
+            Vector3 pos = transform.position;
+            for (int i = 0; i < GENERATE_PREFABS; i++)
+            {
+                GameObject pipeObject = Instantiate(pipePrefab, pos, Quaternion.identity, transform);
+                pipes[i] = pipeObject.GetComponent<Pipe>();
+                pos.x += PIPES_DISTANCE;
+            }
         }
 
-        public void Gaming()
+        public void GameStart()
         {
-            //一秒執行一次
-            time += Time.deltaTime;
-            if (time < GENERATE_PERIOD)
-                return;
-
-            GameObject pipe = Instantiate(pipePrefab, transform.position, Quaternion.identity, transform);
-            pipe.GetComponent<Pipe>().SetSprite(allCards[Random.Range(0, allCards.Length)], allCards[Random.Range(0, allCards.Length)]); //隨機選擇材質
-            time = 0.0F;
+            leadingPipe = 0; //領頭的
+            Vector3 pos = transform.position;
+            foreach (Pipe pipe in pipes)
+            {
+                pipe.transform.localPosition = pos;
+                pos.x += PIPES_DISTANCE;
+                pipe.enabled = true;
+            }
         }
 
         public void PassPipe()
@@ -44,9 +49,21 @@ namespace Hageeshow.FlappyBird
             soundPlayer.Play();
         }
 
+        public void PipeReachedEnd(Pipe pipe)
+        {
+            int leadingPipeSub1 = leadingPipe - 1; //0為首9為尾 1為首0為尾 2為首1為尾
+            Vector3 lastPipePos = transform.GetChild(leadingPipeSub1 < 0 ? GENERATE_PREFABS - 1 : leadingPipeSub1).localPosition;
+            lastPipePos.x += PIPES_DISTANCE;
+            pipe.transform.localPosition = lastPipePos;
+
+            leadingPipe++;
+            if (leadingPipe == GENERATE_PREFABS)
+                leadingPipe = 0;
+        }
+
         public void GameEnd(bool isWon)
         {
-            foreach (Pipe pipe in GetComponentsInChildren<Pipe>())
+            foreach (Pipe pipe in pipes)
                 pipe.enabled = false; //停止所有的水管
         }
     }

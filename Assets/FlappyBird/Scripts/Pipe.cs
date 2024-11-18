@@ -2,22 +2,36 @@ using UnityEngine;
 
 namespace Hageeshow.FlappyBird
 {
-    [RequireComponent(typeof(Collider2D))]
     public class Pipe : MonoBehaviour
     {
+        [SerializeField]
+        private Sprite[] allCards;
+
         private const float SCREEN_TOP = 7.0F;
         private const float SCREEN_BOTTOM = -5.0F;
 
+        private PipeGenerator pipeGenerator;
+
         private Transform upper;
         private Transform lower;
+        private SpriteRenderer upperRenderer;
+        private SpriteRenderer lowerRenderer;
 
         private void Awake()
         {
+            pipeGenerator = transform.parent.GetComponent<PipeGenerator>();
             upper = transform.GetChild(0);
             lower = transform.GetChild(1);
+            upperRenderer = upper.GetComponent<SpriteRenderer>();
+            lowerRenderer = lower.GetComponent<SpriteRenderer>();
         }
 
         private void Start()
+        {
+            ResetPipe();
+        }
+
+        private void ResetPipe()
         {
             float spaceCenter = Random.Range(-2.0F, 2.0F); //空間的中間
             float upperBottom = spaceCenter + 1.5F;
@@ -34,18 +48,18 @@ namespace Hageeshow.FlappyBird
 
             lower.localPosition = new(0.0F, lowerCenter, 0.0F);
             lower.localScale = new(1.0F, lowerLength * 0.5F, 1.0F);
-        }
 
-        internal void SetSprite(Sprite upperSprite, Sprite lowerSprite)
-        {
-            upper.GetComponent<SpriteRenderer>().sprite = upperSprite;
-            lower.GetComponent<SpriteRenderer>().sprite = lowerSprite;
+            upperRenderer.sprite = allCards[Random.Range(0, allCards.Length)];
+            lowerRenderer.sprite = allCards[Random.Range(0, allCards.Length)];
         }
 
         private void Update()
         {
             if (transform.position.x < -10)
-                Destroy(gameObject);
+            {
+                pipeGenerator.PipeReachedEnd(this);
+                ResetPipe();
+            }
             else
                 transform.Translate(Time.deltaTime * -5.5F, 0.0F, 0.0F);
         }

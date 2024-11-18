@@ -33,7 +33,7 @@ namespace Hageeshow.TicTacToe
 
         public State GetState() => state;
 
-        internal void ResetButton()
+        internal void ResetMe()
         {
             image.sprite = cardSprite;
             state = State.EMPTY;

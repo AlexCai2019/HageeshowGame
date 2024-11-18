@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Hageeshow.Breakout
 {
-    public class GameManager : GenericGameManager, IHitBrickEvent
+    public class GameManager : GenericGameManager, IHitBrickEvent, IDieEvent
     {
         [SerializeField]
         private Board board;
@@ -11,6 +11,8 @@ namespace Hageeshow.Breakout
         [SerializeField]
         private Hagee hagee;
         [SerializeField]
+        private Lifes lifes;
+        [SerializeField]
         private TitleText title;
         [SerializeField]
         private WinVideoControl winVideo;
@@ -18,6 +20,8 @@ namespace Hageeshow.Breakout
         private TimeText timeText;
 
         public static GameManager instance;
+
+        private readonly IDieEvent[] dieEventObjects = new IDieEvent[3];
 
         private void Awake()
         {
@@ -29,14 +33,25 @@ namespace Hageeshow.Breakout
             gameObjects.Add(board);
             gameObjects.Add(brickGenerator);
             gameObjects.Add(hagee);
+            gameObjects.Add(lifes);
             gameObjects.Add(title);
             gameObjects.Add(winVideo);
             gameObjects.Add(timeText);
+
+            dieEventObjects[0] = board;
+            dieEventObjects[1] = hagee;
+            dieEventObjects[2] = lifes;
         }
 
         private void OnDestroy()
         {
             instance = null;
+        }
+
+        public void Dead()
+        {
+            foreach (IDieEvent obj in dieEventObjects)
+                obj.Dead();
         }
 
         protected override bool StartCondition()

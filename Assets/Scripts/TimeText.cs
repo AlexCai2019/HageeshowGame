@@ -16,6 +16,7 @@ namespace Hageeshow
         {
             tick = 0.0F;
             time = 0U;
+            myText.text = "0";
             recordText.text = string.Empty;
         }
 
@@ -26,7 +27,7 @@ namespace Hageeshow
                 return;
 
             time++;
-            tick -= 1.0F;
+            tick--;
             myText.text = time.ToString();
         }
 

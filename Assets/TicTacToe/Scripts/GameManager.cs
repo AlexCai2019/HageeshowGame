@@ -46,7 +46,7 @@ namespace Hageeshow.TicTacToe
             base.GameStart();
 
             foreach (TicTacToeButton button in map)
-                button.ResetButton();
+                button.ResetMe();
 
             spaces = 3U * 3U;
             isTie = false;

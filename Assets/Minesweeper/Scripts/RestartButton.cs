@@ -29,8 +29,6 @@ namespace Hageeshow.Minesweeper
             childImage.sprite = smile;
         }
 
-        public void Gaming() {}
-
         public void GameEnd(bool isWon)
         {
             childImage.sprite = isWon ? sunglasses : dizzy;

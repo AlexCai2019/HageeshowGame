@@ -18,8 +18,6 @@ namespace Hageeshow.FlappyBird
             recordText.text = string.Empty;
         }
 
-        public void Gaming() {}
-
         public void PassPipe()
         {
             pipes++;

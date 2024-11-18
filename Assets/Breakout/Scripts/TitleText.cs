@@ -7,8 +7,6 @@ namespace Hageeshow.Breakout
             myText.text = string.Empty;
         }
 
-        public void Gaming() { }
-
         public void GameEnd(bool isWon)
         {
             myText.text = isWon ? "你贏了！" : "你死了！";

@@ -4,7 +4,7 @@ namespace Hageeshow.Breakout
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
-    public class Board : MonoBehaviour, IGameState
+    public class Board : MonoBehaviour, IGameState, IDieEvent
     {
         [SerializeField]
         private float speed;
@@ -30,6 +30,12 @@ namespace Hageeshow.Breakout
         public void FixedGaming()
         {
             transform.Translate(move * speed, 0.0F, 0.0F);
+        }
+
+        public void Dead()
+        {
+            move = 0.0F;
+            transform.position = new(0.0F, -4.0F, 0.0F);
         }
 
         public void GameEnd(bool isWon)

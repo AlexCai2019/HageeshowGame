@@ -9,10 +9,6 @@ namespace Hageeshow.Minesweeper
             SetCount((int)CardGenerator.MINES_COUNT);
         }
 
-        public void Gaming() {}
-
-        public void GameEnd(bool isWon) {}
-
         internal void Add() => SetCount(minesCount + 1);
 
         internal void Subtract() => SetCount(minesCount - 1);
