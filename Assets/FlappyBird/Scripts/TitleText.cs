@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 namespace Hageeshow.FlappyBird
 {
+    [RequireComponent(typeof(Text))]
     public class TitleText : GenericText, IGameState, IPassPipeEvent
     {
         [SerializeField]

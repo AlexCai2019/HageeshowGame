@@ -51,6 +51,8 @@ namespace Hageeshow.Minesweeper
 
         internal uint GetVal() => val;
 
+        public void DisableValSprite() => valRenderer.sprite = null; //animation event­n¥Î
+
         internal void ResetCard()
         {
             val = 0U;

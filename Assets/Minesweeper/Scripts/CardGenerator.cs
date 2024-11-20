@@ -67,18 +67,18 @@ namespace Hageeshow.Minesweeper
         private void Start()
         {
             //建立所有的卡牌物件
-            float xPos, yPos = 4.3F; //y起始4.3
+            float xPos, yPos = 2.9F; //y起始2.9
             for (uint y = 0U; y < Y; y++)
             {
-                xPos = -6.6F; //x起始6.6
+                xPos = -5.58F; //x起始-5.7
                 for (uint x = 0U; x < X; x++)
                 {
                     GameObject cardObject = Instantiate(cardPrefab, new(xPos, yPos), Quaternion.identity, transform);
                     map[y, x] = cardObject.GetComponent<Card>();
                     map[y, x].InitializeXY(x, y);
-                    xPos += 1.1F;
+                    xPos += 0.93F; //每直行x增加0.93
                 }
-                yPos -= 1.6F;
+                yPos -= 1.4F; //每橫列y減少1.4
             }
         }
 

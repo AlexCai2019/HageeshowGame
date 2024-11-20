@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 namespace Hageeshow
 {
+    [RequireComponent(typeof(Text))]
     public class TimeText : GenericText, IGameState
     {
         [SerializeField]
@@ -37,7 +38,7 @@ namespace Hageeshow
             {
                 if (time < recordTime)
                     recordTime = time;
-                recordText.text = $"本次紀錄:\n{time}\n最快紀錄:\n{recordTime}";
+                recordText.text = $"本次紀錄\n{time}\n最快紀錄\n{recordTime}";
             }
         }
     }

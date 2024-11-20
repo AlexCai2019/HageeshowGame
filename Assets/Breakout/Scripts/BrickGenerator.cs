@@ -21,17 +21,17 @@ namespace Hageeshow.Breakout
         private void Start()
         {
             //建立所有的磚塊
-            float xPos, yPos = 4.0F; //y起始4
+            float xPos, yPos = 2.562F; //y起始2.562
             for (uint y = 0U; y < 4U; y++)
             {
-                xPos = -9.0F; //x起始9
+                xPos = -8.064F; //x起始-8.064
                 for (uint x = 0U; x < 13U; x++)
                 {
                     GameObject brickObject = Instantiate(brickPrefab, new(xPos, yPos), brickPrefab.transform.rotation, transform);
                     brickObject.GetComponent<SpriteRenderer>().sprite = allCards[y * 13 + x]; //現在就替換 讓遊戲開始前好看一點
-                    xPos += 1.5F; //每直行x增加1.5
+                    xPos += 1.344F; //每直行x增加1.344
                 }
-                yPos--; //每橫列y減少1
+                yPos -= 0.854F; //每橫列y減少0.854
             }
         }
 
