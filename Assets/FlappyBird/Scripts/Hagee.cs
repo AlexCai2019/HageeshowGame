@@ -7,13 +7,10 @@ namespace Hageeshow.FlappyBird
     [RequireComponent(typeof(AudioSource))]
     public class Hagee : MonoBehaviour, IGameState
     {
-        [SerializeField]
-        private AudioClip rushClip;
-        [SerializeField]
-        private AudioClip metalClip;
-
         private Rigidbody2D rb2D;
         private AudioSource soundPlayer;
+
+        private float groundY;
 
         private bool jump;
 
@@ -21,6 +18,7 @@ namespace Hageeshow.FlappyBird
         {
             rb2D = GetComponent<Rigidbody2D>();
             soundPlayer = GetComponent<AudioSource>();
+            groundY = Camera.main.ScreenToWorldPoint(Vector3.zero).y - 1;
         }
 
         public void GameStart()
@@ -28,16 +26,13 @@ namespace Hageeshow.FlappyBird
             rb2D.bodyType = RigidbodyType2D.Dynamic;
             transform.position = Vector3.zero;
             jump = false;
-
-            soundPlayer.clip = rushClip;
-            soundPlayer.Play();
         }
 
         public void Gaming()
         {
             if (Input.GetKeyUp(KeyCode.Space)) //按空白鍵
                 jump = true;
-            if (transform.position.y < -6) //摔死
+            if (transform.position.y < groundY) //摔死
                 GameManager.instance.GameEnd(false);
         }
 
@@ -61,7 +56,6 @@ namespace Hageeshow.FlappyBird
         public void GameEnd(bool isWon)
         {
             rb2D.bodyType = RigidbodyType2D.Static;
-            soundPlayer.clip = metalClip;
             soundPlayer.Play();
         }
     }

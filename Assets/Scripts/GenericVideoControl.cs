@@ -17,6 +17,12 @@ namespace Hageeshow
             videoPlayer.loopPointReached += EndOfVideo;
         }
 
+        protected void PlayVideo()
+        {
+            videoPlayer.Play();
+            audioSource.Play();
+        }
+
         protected abstract void EndOfVideo(VideoPlayer source);
     }
 }

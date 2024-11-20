@@ -59,8 +59,6 @@ namespace Hageeshow.Minesweeper
             flagObject.SetActive(false);
         }
 
-        public void DisableValSprite() => valRenderer.sprite = null; //不顯示
-
         public void ClickCard(uint x, uint y)
         {
             if (state == CardState.COVER) //蓋著的 且沒有旗子
@@ -82,7 +80,7 @@ namespace Hageeshow.Minesweeper
             return true;
         }
 
-        public void UpdateFlag()
+        private void UpdateFlag()
         {
             if (state == CardState.COVER)
             {

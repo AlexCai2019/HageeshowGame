@@ -10,7 +10,7 @@ namespace Hageeshow.FlappyBird
 
         private AudioSource soundPlayer;
 
-        private const int GENERATE_PREFABS = 10;
+        private const int GENERATE_PREFABS = 5;
         private const float PIPES_DISTANCE = 5.505F;
 
         private int leadingPipe;
@@ -23,13 +23,8 @@ namespace Hageeshow.FlappyBird
 
         private void Start()
         {
-            Vector3 pos = transform.position;
             for (int i = 0; i < GENERATE_PREFABS; i++)
-            {
-                GameObject pipeObject = Instantiate(pipePrefab, pos, Quaternion.identity, transform);
-                pipes[i] = pipeObject.GetComponent<Pipe>();
-                pos.x += PIPES_DISTANCE;
-            }
+                pipes[i] = Instantiate(pipePrefab, transform.position, Quaternion.identity, transform).GetComponent<Pipe>();
         }
 
         public void GameStart()
@@ -38,9 +33,9 @@ namespace Hageeshow.FlappyBird
             Vector3 pos = transform.position;
             foreach (Pipe pipe in pipes)
             {
+                pipe.enabled = true;
                 pipe.transform.localPosition = pos;
                 pos.x += PIPES_DISTANCE;
-                pipe.enabled = true;
             }
         }
 

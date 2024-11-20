@@ -7,15 +7,16 @@ namespace Hageeshow.FlappyBird
         [SerializeField]
         private Sprite[] allCards;
 
-        private const float SCREEN_TOP = 7.0F;
-        private const float SCREEN_BOTTOM = -5.0F;
-
         private PipeGenerator pipeGenerator;
 
         private Transform upper;
         private Transform lower;
         private SpriteRenderer upperRenderer;
         private SpriteRenderer lowerRenderer;
+
+        private float screenTop;
+        private float screenBottom;
+        private float screenLeft;
 
         private void Awake()
         {
@@ -24,6 +25,11 @@ namespace Hageeshow.FlappyBird
             lower = transform.GetChild(1);
             upperRenderer = upper.GetComponent<SpriteRenderer>();
             lowerRenderer = lower.GetComponent<SpriteRenderer>();
+
+            Vector3 screenVector = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            screenTop = -screenVector.y + 0.1F;
+            screenBottom = screenVector.y - 0.1F;
+            screenLeft = screenVector.x - 0.6F;
         }
 
         private void Start()
@@ -37,11 +43,11 @@ namespace Hageeshow.FlappyBird
             float upperBottom = spaceCenter + 1.5F;
             float lowerTop = spaceCenter - 1.5F;
 
-            float upperCenter = (upperBottom + SCREEN_TOP) * 0.5F;
-            float lowerCenter = (lowerTop + SCREEN_BOTTOM) * 0.5F;
+            float upperCenter = (upperBottom + screenTop) * 0.5F;
+            float lowerCenter = (screenBottom + lowerTop) * 0.5F;
 
-            float upperLength = SCREEN_TOP - upperBottom;
-            float lowerLength = lowerTop - SCREEN_BOTTOM;
+            float upperLength = screenTop - upperBottom;
+            float lowerLength = lowerTop - screenBottom;
 
             upper.localPosition = new(0.0F, upperCenter, 0.0F);
             upper.localScale = new(1.0F, upperLength * 0.5F, 1.0F);
@@ -55,7 +61,7 @@ namespace Hageeshow.FlappyBird
 
         private void Update()
         {
-            if (transform.position.x < -10)
+            if (transform.position.x < screenLeft)
             {
                 pipeGenerator.PipeReachedEnd(this);
                 ResetPipe();

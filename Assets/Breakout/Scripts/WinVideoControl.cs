@@ -11,12 +11,11 @@ namespace Hageeshow.Breakout
 
         public void GameEnd(bool isWon)
         {
-            if (!isWon)
-                return;
-
-            gameObject.SetActive(true);
-            videoPlayer.Play();
-            audioSource.Play();
+            if (isWon)
+            {
+                gameObject.SetActive(true);
+                PlayVideo();
+            }
         }
 
         protected override void EndOfVideo(VideoPlayer source)

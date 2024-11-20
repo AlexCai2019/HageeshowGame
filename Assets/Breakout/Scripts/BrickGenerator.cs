@@ -20,8 +20,6 @@ namespace Hageeshow.Breakout
 
         private void Start()
         {
-            ShuffleTextures(); //§÷½è°}¦C¬~µP
-
             //«Ø¥ß©Ò¦³ªº¿j¶ô
             float xPos, yPos = 4.0F; //y°_©l4
             for (uint y = 0U; y < 4U; y++)
@@ -50,32 +48,14 @@ namespace Hageeshow.Breakout
 
         public void GameEnd(bool isWon)
         {
-            ShuffleTextures(); //§÷½è°}¦C¬~µP
-            //´À´«
-            uint index = 0U;
             foreach (Transform child in transform)
-            {
-                child.GetComponent<SpriteRenderer>().sprite = allCards[index++];
                 child.gameObject.SetActive(true);
-            }
         }
 
         public void HitBrick()
         {
             remainBricks--;
             soundPlayer.Play();
-        }
-
-        private void ShuffleTextures()
-        {
-            //§÷½è°}¦C¬~µP
-            int len = allCards.Length;
-            for (int i = 0; i < len - 1; i++)
-            {
-                int swap = Random.Range(i, len);
-                if (swap != i)
-                    (allCards[i], allCards[swap]) = (allCards[swap], allCards[i]);
-            }
         }
     }
 }

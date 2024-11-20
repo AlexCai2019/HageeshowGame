@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Hageeshow.FlappyBird
 {
+    [RequireComponent(typeof(AudioSource))]
     public class GameManager : GenericGameManager, IPassPipeEvent
     {
         public static GameManager instance;
@@ -15,11 +16,13 @@ namespace Hageeshow.FlappyBird
 
         private readonly IPassPipeEvent[] passObjects = new IPassPipeEvent[2];
 
+        private AudioSource soundPlayer;
         private float endCooldown = 0;
 
         private void Awake()
         {
             instance = this;
+            soundPlayer = GetComponent<AudioSource>();
         }
 
         private void Start()
@@ -35,6 +38,12 @@ namespace Hageeshow.FlappyBird
         private void OnDestroy()
         {
             instance = null;
+        }
+
+        public override void GameStart()
+        {
+            base.GameStart();
+            soundPlayer.Play();
         }
 
         public void PassPipe()

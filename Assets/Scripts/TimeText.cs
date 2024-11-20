@@ -37,7 +37,7 @@ namespace Hageeshow
             {
                 if (time < recordTime)
                     recordTime = time;
-                recordText.text = $"本次紀錄: {time}\n最快紀錄: {recordTime}";
+                recordText.text = $"本次紀錄:\n{time}\n最快紀錄:\n{recordTime}";
             }
         }
     }

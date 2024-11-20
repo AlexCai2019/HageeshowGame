@@ -7,8 +7,7 @@ namespace Hageeshow.Intro
     {
         private void Start()
         {
-            videoPlayer.Play();
-            audioSource.Play();
+            PlayVideo();
         }
 
         protected override void EndOfVideo(VideoPlayer source)
