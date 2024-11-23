@@ -16,9 +16,19 @@ namespace Hageeshow.TicTacToe
 
         private bool isTie;
 
-        public readonly int[,] winning =
+        public const uint LEFT_UP = 0U; //陣列的第一項
+        public const uint UP = 1U;
+        public const uint RIGHT_UP = 2U;
+        public const uint LEFT = 3U;
+        public const uint CENTER = 4U; //陣列的中間
+        public const uint RIGHT = 5U;
+        public const uint LEFT_DOWN = 6U;
+        public const uint DOWN = 7U;
+        public const uint RIGHT_DOWN = 8U;
+
+        public readonly uint[,] winning =
         {
-            {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, //橫列
+            {LEFT_UP, UP, RIGHT_UP}, {3, 4, 5}, {6, 7, 8}, //橫列
 	    	{0, 3, 6}, {1, 4, 7}, {2, 5, 8}, //直行
 	    	{0, 4, 8}, {2, 4, 6} //斜線
 	    };
