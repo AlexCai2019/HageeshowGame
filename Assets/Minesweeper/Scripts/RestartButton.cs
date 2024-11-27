@@ -12,11 +12,11 @@ namespace Hageeshow.Minesweeper
         [SerializeField]
         private Sprite dizzy;
 
-        private Image childImage;
+        private Image myImage;
 
         private void Awake()
         {
-            childImage = transform.GetChild(0).GetComponent<Image>();
+            myImage = GetComponent<Image>();
         }
 
         public override void OnClick()
@@ -26,12 +26,12 @@ namespace Hageeshow.Minesweeper
 
         public void GameStart()
         {
-            childImage.sprite = smile;
+            myImage.sprite = smile;
         }
 
         public void GameEnd(bool isWon)
         {
-            childImage.sprite = isWon ? sunglasses : dizzy;
+            myImage.sprite = isWon ? sunglasses : dizzy;
         }
     }
 }

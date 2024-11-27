@@ -7,6 +7,9 @@ namespace Hageeshow.FlappyBird
     [RequireComponent(typeof(AudioSource))]
     public class Hagee : MonoBehaviour, IGameState
     {
+        [SerializeField]
+        private float jumpForce;
+
         private Rigidbody2D rb2D;
         private AudioSource soundPlayer;
 
@@ -38,11 +41,13 @@ namespace Hageeshow.FlappyBird
 
         public void FixedGaming()
         {
-            if (jump)
-            {
-                rb2D.velocity = new(rb2D.velocity.x, 3.5F);
-                jump = false;
-            }
+            if (!jump)
+                return;
+
+            Vector2 newVelocity = rb2D.velocity;
+            newVelocity.y = jumpForce;
+            rb2D.velocity = newVelocity;
+            jump = false;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
