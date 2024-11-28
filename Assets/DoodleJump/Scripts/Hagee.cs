@@ -4,12 +4,10 @@ namespace Hageeshow.DoodleJump
 {
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
-    public class Hagee : MonoBehaviour, IGameState, IHitPlatformEvent
+    public class Hagee : MonoBehaviour, IGameState
     {
         [SerializeField]
         private float speed;
-        [SerializeField]
-        private float jumpForce;
 
         private Rigidbody2D rb2D;
         private float move;
@@ -43,20 +41,6 @@ namespace Hageeshow.DoodleJump
                 transform.position = new(transform.position.x + screenWidth, transform.position.y);
             else if (transform.position.x > -xMin)
                 transform.position = new(transform.position.x - screenWidth, transform.position.y);
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            GameManager.instance.HitPlatform();
-        }
-
-        public void HitPlatform()
-        {
-            if (rb2D.velocity.y <= 0.0F)
-                return;
-            Vector2 newVelocity = rb2D.velocity;
-            newVelocity.y = jumpForce;
-            rb2D.velocity = newVelocity;
         }
     }
 }

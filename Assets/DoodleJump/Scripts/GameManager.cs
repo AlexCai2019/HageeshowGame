@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Hageeshow.DoodleJump
 {
-    public class GameManager : GenericGameManager, IHitPlatformEvent
+    public class GameManager : GenericGameManager
     {
         public static GameManager instance;
 
@@ -15,8 +15,6 @@ namespace Hageeshow.DoodleJump
         [SerializeField]
         private CameraFollow cameraFollow;
 
-        private readonly IHitPlatformEvent[] hitObjects = new IHitPlatformEvent[3];
-
         private void Awake()
         {
             instance = this;
@@ -24,22 +22,11 @@ namespace Hageeshow.DoodleJump
             gameObjects.Add(hagee);
             gameObjects.Add(cameraFollow);
             gameObjects.Add(platformGenerator);
-
-            hitObjects[0] = hagee;
-            hitObjects[1] = cameraFollow;
-            hitObjects[2] = platformGenerator;
         }
 
         private void OnDestroy()
         {
             instance = null;
-        }
-
-        public void HitPlatform()
-        {
-            if (isGaming)
-                foreach (IHitPlatformEvent obj in hitObjects)
-                    obj.HitPlatform();
         }
 
         protected override bool StartCondition()
