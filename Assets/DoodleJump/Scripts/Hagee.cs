@@ -9,13 +9,10 @@ namespace Hageeshow.DoodleJump
         [SerializeField]
         private float speed;
         [SerializeField]
-        private float jumpForce;
-        [SerializeField]
         private TitleText titleText;
 
         private Rigidbody2D rb2D;
         private float move;
-        private float springJumpForce;
 
         private readonly Vector3 startPos = new(0.0F, GameManager.BOTTOM_Y + 2.0F, 0.0F);
 
@@ -27,7 +24,6 @@ namespace Hageeshow.DoodleJump
             rb2D = GetComponent<Rigidbody2D>();
             xMin = Camera.main.ScreenToWorldPoint(Vector3.zero).x;
             screenWidth = -xMin * 2.0F;
-            springJumpForce = jumpForce * 1.5F;
         }
 
         public void GameStart()
@@ -58,34 +54,11 @@ namespace Hageeshow.DoodleJump
             rb2D.bodyType = RigidbodyType2D.Static; //避免繼續下落
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        public void OnCollide(float bounceForce)
         {
-            //只偵測落到地上
-            if (collision.GetContact(0).normal.y < 0)
-                return;
-            
-            GameObject obj = collision.gameObject;
-            float force;
-            if (obj.CompareTag("Platform"))
-                force = jumpForce;
-            else if (obj.CompareTag("Spring"))
-            {
-                force = springJumpForce;
-                obj.GetComponent<Animator>().SetBool("isCompress", true);
-            }
-            else
-                return;
-
-            if (rb2D.velocity.y < force)
-                rb2D.velocity = new(rb2D.velocity.x, force);
+            if (rb2D.velocity.y < bounceForce)
+                rb2D.velocity = new(rb2D.velocity.x, bounceForce);
             titleText.UpdateScore((int)(transform.position.y - GameManager.BOTTOM_Y));
-        }
-
-        private void OnCollisionExit2D(Collision2D collision)
-        {
-            GameObject obj = collision.gameObject;
-            if (obj.CompareTag("Spring"))
-                obj.GetComponent<Animator>().SetBool("isCompress", false);
         }
     }
 }
