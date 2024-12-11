@@ -6,7 +6,7 @@ namespace Hageeshow.DoodleJump
     {
         public static GameManager instance;
 
-        public const float BOTTOM_Y = -50000.0F;
+        public const float BOTTOM_Y = -30000.0F;
 
         [SerializeField]
         private Hagee hagee;
@@ -14,6 +14,8 @@ namespace Hageeshow.DoodleJump
         private PlatformGenerator platformGenerator;
         [SerializeField]
         private CameraFollow cameraFollow;
+        [SerializeField]
+        private TitleText titleText;
 
         private void Awake()
         {
@@ -22,6 +24,7 @@ namespace Hageeshow.DoodleJump
             gameObjects.Add(hagee);
             gameObjects.Add(cameraFollow);
             gameObjects.Add(platformGenerator);
+            gameObjects.Add(titleText);
         }
 
         private void OnDestroy()

@@ -110,6 +110,30 @@ namespace Hageeshow.TicTacToe
             //確認人類沒有要連線後
             return base.Round2(map);
         }
+
+        protected override TicTacToeButton Round3(TicTacToeButton[] map)
+        {
+            uint first, second, third;
+            State f, s, t;
+
+            uint[,] winning = GameManager.instance.winning;
+
+            for (int i = 0, len = winning.GetLength(0); i < len; i++) //檢查自己是否即將連線 如果是則執行
+            {
+                f = map[first = winning[i, 0]].GetState(); //可能連線的第一格 同時將索引存進first中
+                s = map[second = winning[i, 1]].GetState(); //可能連線的第二格 同時將索引存進second中
+                t = map[third = winning[i, 2]].GetState(); //可能連線的第三格 同時將索引存進third中
+                if (f == State.CHOCOLATE && s == State.CHOCOLATE && t == State.EMPTY) //[0]和[1]皆為Chocolate
+                    return map[third];
+                if (f == State.CHOCOLATE && t == State.CHOCOLATE && s == State.EMPTY) //[0]和[2]皆為Chocolate
+                    return map[second];
+                if (s == State.CHOCOLATE && t == State.CHOCOLATE && f == State.EMPTY) //[1]和[2]皆為Chocolate
+                    return map[first];
+            }
+
+            //沒有要連線的話就
+            return base.Round3(map);
+        }
     }
 
     internal class HardBrain : NormalBrain
@@ -146,19 +170,6 @@ namespace Hageeshow.TicTacToe
 
             uint[,] winning = GameManager.instance.winning;
 
-            for (int i = 0, len = winning.GetLength(0); i < len; i++) //檢查自己是否即將連線 如果是則執行
-            {
-                f = map[first = winning[i, 0]].GetState(); //可能連線的第一格 同時將索引存進first中
-                s = map[second = winning[i, 1]].GetState(); //可能連線的第二格 同時將索引存進second中
-                t = map[third = winning[i, 2]].GetState(); //可能連線的第三格 同時將索引存進third中
-                if (f == State.CHOCOLATE && s == State.CHOCOLATE && t == State.EMPTY) //[0]和[1]皆為Chocolate
-                    return map[third];
-                if (f == State.CHOCOLATE && t == State.CHOCOLATE && s == State.EMPTY) //[0]和[2]皆為Chocolate
-                    return map[second];
-                if (s == State.CHOCOLATE && t == State.CHOCOLATE && f == State.EMPTY) //[1]和[2]皆為Chocolate
-                    return map[first];
-            }
-
             for (int i = 0, len = winning.GetLength(0); i < len; i++) //檢查人類是否即將連線 如果人類確實即將連線則阻止
             {
                 f = map[first = winning[i, 0]].GetState(); //可能連線的第一格 同時將索引存進first中
@@ -172,7 +183,7 @@ namespace Hageeshow.TicTacToe
                     return map[first];
             }
 
-            //以上都不通過
+            //如果人類沒有要連線
             return base.Round3(map);
         }
     }

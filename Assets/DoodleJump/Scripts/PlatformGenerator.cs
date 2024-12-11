@@ -17,6 +17,19 @@ namespace Hageeshow.DoodleJump
         private readonly Platform[] platformsArray = new Platform[PLATFORMS];
         private uint index;
 
+        private int stage;
+
+        private void Awake()
+        {
+            Vector3 spawnPos = new(0.0F, GameManager.BOTTOM_Y, 0.0F);
+            for (uint p = 0U; p < PLATFORMS; p++)
+            {
+                GameObject newPlatform = Instantiate(platformPrefab, spawnPos, platformPrefab.transform.rotation, transform);
+                platformsArray[p] = newPlatform.GetComponent<Platform>();
+                platformsArray[p].ResetPlatform(0); //一開始的不要有移動
+            }
+        }
+
         public void GameStart()
         {
             beforePlatform.SetActive(false);
@@ -25,20 +38,18 @@ namespace Hageeshow.DoodleJump
             Vector3 screenRange = Camera.main.ScreenToWorldPoint(Vector3.zero);
             maxDistance = 2.0F; //剛開始的時候距離短一點
 
-            //把20個平台放到堆疊裡
             //最下面那個一定要在中心
-            GameObject newPlatform;
-            newPlatform = Instantiate(platformPrefab, new(0.0F, topY, 0.0F), platformPrefab.transform.rotation, transform);
-            platformsArray[0] = newPlatform.GetComponent<Platform>();
-            platformsArray[0].ResetPlatform(0); //第一格不能是移動
+            platformsArray[0].transform.position = new(0.0F, topY, 0.0F);
+            platformsArray[0].ResetPlatform(0); //一開始的不要有移動
             topY += Random.Range(minDistance, maxDistance);
             for (uint p = 1U; p < PLATFORMS; p++, topY += Random.Range(minDistance, maxDistance))
             {
-                newPlatform = Instantiate(platformPrefab, new(Random.Range(screenRange.x, -screenRange.x), topY, 0.0F), platformPrefab.transform.rotation, transform);
-                platformsArray[p] = newPlatform.GetComponent<Platform>();
+                platformsArray[p].transform.position = new(Random.Range(screenRange.x, -screenRange.x), topY, 0.0F);
                 platformsArray[p].ResetPlatform(0);
             }
             index = 0;
+
+            stage = 0; //階段0
         }
 
         public void Gaming()
@@ -51,7 +62,7 @@ namespace Hageeshow.DoodleJump
                 if (lowestPlatform.transform.position.y > screenRange.y)
                     break;
                 lowestPlatform.transform.position = new(Random.Range(screenRange.x, -screenRange.x), topY, 0.0F); //放到最上面
-                lowestPlatform.ResetPlatform(maxDistance); //以maxDistance作為平台能否移動的機率
+                lowestPlatform.ResetPlatform(stage); //以stage作為平台能否移動的機率 最低0 最高9
                 topY += Random.Range(minDistance, maxDistance);
 
                 index++;
@@ -60,31 +71,32 @@ namespace Hageeshow.DoodleJump
             }
 
             //距離設定
-            if (maxDistance >= 3.0F)
+            if (stage == 9)
                 return;
 
-            if (topY < GameManager.BOTTOM_Y + 50.0F)
-                maxDistance = 2.0F;
+            /*if (topY < GameManager.BOTTOM_Y + 50.0F)
+                stage = 0;
             else if (topY < GameManager.BOTTOM_Y + 100.0F)
-                maxDistance = 2.1F;
+                stage = 1;
             else if (topY < GameManager.BOTTOM_Y + 150.0F)
-                maxDistance = 2.2F;
+                stage = 2;
             else if (topY < GameManager.BOTTOM_Y + 200.0F)
-                maxDistance = 2.3F;
+                stage = 3;
             else if (topY < GameManager.BOTTOM_Y + 250.0F)
-                maxDistance = 2.4F;
+                stage = 4;
             else if (topY < GameManager.BOTTOM_Y + 300.0F)
-                maxDistance = 2.5F;
+                stage = 5;
             else if (topY < GameManager.BOTTOM_Y + 350.0F)
-                maxDistance = 2.6F;
+                stage = 6;
             else if (topY < GameManager.BOTTOM_Y + 400.0F)
-                maxDistance = 2.7F;
+                stage = 7;
             else if (topY < GameManager.BOTTOM_Y + 450.0F)
-                maxDistance = 2.8F;
-            else if (topY < GameManager.BOTTOM_Y + 500.0F)
-                maxDistance = 2.9F;
-            else if (topY < GameManager.BOTTOM_Y + 550.0F)
-                maxDistance = 3.0F;
+                stage = 8;
+            else
+                stage = 9;*/
+            stage = System.Math.Min((int)((topY - GameManager.BOTTOM_Y) / 50), 9);
+
+            maxDistance = 2.0F + stage / 10.0F;
         }
     }
 }
