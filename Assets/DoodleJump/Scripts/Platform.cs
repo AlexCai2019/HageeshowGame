@@ -23,8 +23,8 @@ namespace Hageeshow.DoodleJump
         {
             base.Awake();
             Vector3 screenRange = Camera.main.ScreenToWorldPoint(Vector3.zero);
-            leftX = screenRange.x;
-            rightX = -screenRange.x;
+            leftX = screenRange.x + 1;
+            rightX = -screenRange.x - 1;
             direction = Random.Range(0, 2) == 0 ? baseSpeed : -baseSpeed;
             spriteRenderer = GetComponent<SpriteRenderer>();
             spring = transform.GetChild(0).gameObject;

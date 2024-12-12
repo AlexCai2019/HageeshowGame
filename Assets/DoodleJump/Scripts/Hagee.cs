@@ -4,6 +4,7 @@ namespace Hageeshow.DoodleJump
 {
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(AudioSource))]
     public class Hagee : MonoBehaviour, IGameState
     {
         [SerializeField]
@@ -12,6 +13,7 @@ namespace Hageeshow.DoodleJump
         private TitleText titleText;
 
         private Rigidbody2D rb2D;
+        private AudioSource deadAudio;
         private float move;
 
         private readonly Vector3 startPos = new(0.0F, GameManager.BOTTOM_Y + 2.0F, 0.0F);
@@ -22,6 +24,7 @@ namespace Hageeshow.DoodleJump
         private void Awake()
         {
             rb2D = GetComponent<Rigidbody2D>();
+            deadAudio = GetComponent<AudioSource>();
             xMin = Camera.main.ScreenToWorldPoint(Vector3.zero).x;
             screenWidth = -xMin * 2.0F;
         }
@@ -52,6 +55,7 @@ namespace Hageeshow.DoodleJump
         public void GameEnd(bool isWon)
         {
             rb2D.bodyType = RigidbodyType2D.Static; //Á×§KÄ~Äò¤U¸¨
+            deadAudio.Play();
         }
 
         public void OnCollide(float bounceForce)

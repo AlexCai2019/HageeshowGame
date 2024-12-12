@@ -14,6 +14,9 @@ namespace Hageeshow.DoodleJump
         private readonly float minDistance = 1.0F;
         private float maxDistance;
 
+        private float leftX;
+        private float rightX;
+
         private readonly Platform[] platformsArray = new Platform[PLATFORMS];
         private uint index;
 
@@ -28,6 +31,10 @@ namespace Hageeshow.DoodleJump
                 platformsArray[p] = newPlatform.GetComponent<Platform>();
                 platformsArray[p].ResetPlatform(0); //一開始的不要有移動
             }
+
+            Vector3 screenRange = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            leftX = screenRange.x + 1;
+            rightX = -screenRange.x - 1;
         }
 
         public void GameStart()
@@ -44,7 +51,7 @@ namespace Hageeshow.DoodleJump
             topY += Random.Range(minDistance, maxDistance);
             for (uint p = 1U; p < PLATFORMS; p++, topY += Random.Range(minDistance, maxDistance))
             {
-                platformsArray[p].transform.position = new(Random.Range(screenRange.x, -screenRange.x), topY, 0.0F);
+                platformsArray[p].transform.position = new(Random.Range(leftX, rightX), topY, 0.0F);
                 platformsArray[p].ResetPlatform(0);
             }
             index = 0;
@@ -61,7 +68,7 @@ namespace Hageeshow.DoodleJump
                 Platform lowestPlatform = platformsArray[index]; //index會維持在目前最低的
                 if (lowestPlatform.transform.position.y > screenRange.y)
                     break;
-                lowestPlatform.transform.position = new(Random.Range(screenRange.x, -screenRange.x), topY, 0.0F); //放到最上面
+                lowestPlatform.transform.position = new(Random.Range(leftX, rightX), topY, 0.0F); //放到最上面
                 lowestPlatform.ResetPlatform(stage); //以stage作為平台能否移動的機率 最低0 最高9
                 topY += Random.Range(minDistance, maxDistance);
 
