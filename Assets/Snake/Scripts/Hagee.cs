@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Hageeshow.Snake
 {
-    public class Hagee : MonoBehaviour, IGameState
+    public class Hagee : MonoBehaviour, IGameState, IEatFoodEvent
     {
         [SerializeField]
         private float speed;
@@ -43,5 +43,17 @@ namespace Hageeshow.Snake
         {
             transform.Translate(direction);
         }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            GameObject obj = collision.gameObject;
+            if (obj.CompareTag("Border"))
+                GameManager.instance.GameEnd(false);
+            else if (obj.CompareTag("Food"))
+                GameManager.instance.EatFood();
+        }
+
+        public void EatFood()
+        { }
     }
 }
