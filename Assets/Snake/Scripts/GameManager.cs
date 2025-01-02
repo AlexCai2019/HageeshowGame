@@ -13,7 +13,7 @@ namespace Hageeshow.Snake
         [SerializeField]
         private TitleText titleText;
 
-        private readonly IEatFoodEvent[] eatObjects = new IEatFoodEvent[2];
+        private readonly IEatFoodEvent[] eatObjects = new IEatFoodEvent[3];
 
         private void Awake()
         {
@@ -25,6 +25,7 @@ namespace Hageeshow.Snake
 
             eatObjects[0] = hagee;
             eatObjects[1] = food;
+            eatObjects[2] = titleText;
         }
 
         private void OnDestroy()

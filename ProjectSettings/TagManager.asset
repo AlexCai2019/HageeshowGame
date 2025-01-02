@@ -10,6 +10,8 @@ TagManager:
   - Platform
   - Spring
   - Border
+  - Food
+  - Segment
   layers:
   - Default
   - TransparentFX

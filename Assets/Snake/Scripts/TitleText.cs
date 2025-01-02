@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Hageeshow.Snake
 {
-    public class TitleText : GenericText, IGameState
+    public class TitleText : GenericText, IGameState, IEatFoodEvent
     {
         [SerializeField]
         private Text recordText;
@@ -20,15 +20,15 @@ namespace Hageeshow.Snake
 
         public void GameEnd(bool isWon)
         {
-            myText.text = "按空白鍵重生";
+            myText.text = isWon ? "你贏了！" : "按空白鍵重生";
             if (score > highestScore)
                 highestScore = score;
             recordText.text = $"本次紀錄: {score} 最高紀錄: {highestScore}";
         }
 
-        public void UpdateScore(int score)
+        public void EatFood()
         {
-            this.score = score;
+            score++;
             myText.text = score.ToString();
         }
     }
